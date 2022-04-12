@@ -9,3 +9,5 @@ Files for the C/AVX-512 implementation
 Main2.cpp
 avxTest.asm
 
+Contact info:  Mark44 at PhysicsForums.com
+
