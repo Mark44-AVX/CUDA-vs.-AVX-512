@@ -4,6 +4,7 @@
 
 ;ZERO	dq	8 dup(0)	; 64 bytes of zero
 HIMASK	dq 0FFFFFFFFFFFFFFFFh, 0			; Mask to clear upper half of XMM register 
+STRIDE	dq 64
 
 .code
 
