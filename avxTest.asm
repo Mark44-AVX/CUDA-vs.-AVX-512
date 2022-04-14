@@ -81,8 +81,8 @@ CombineSums:
 
 	
 ; Epilogue
-	pop		rsi
-    add     rsp, 20h		                  ; Adjust the stack back to original state
+	pop	rsi
+    	add     rsp, 20h		          ; Adjust the stack back to original state
 	pop     rdi				  ; Restore RDI	
 	ret 
 sumVector ENDP
@@ -113,7 +113,7 @@ vecProduct PROC C
 ; Initialization	
 	vzeroall				; Zero out all ZMM registers.
 	mov rax, rcx			        ; Copy output array address to RAX.
-	shr r9, 3				; r9 <- Number of 8 double chunks.
+	shr r9, 3				; r9 <- Number of octets of doubles.
 	mov rcx, r9				; Copy no. of 8 double chunks to RCX
 	xor rsi, rsi			        ; Zero RSI.	
 	xor rdi, rdi			        ; Zero RDI.					
