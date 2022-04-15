@@ -3,7 +3,6 @@
 .data
 
 ;ZERO	dq	8 dup(0)	; 64 bytes of zero
-HIMASK	dq 0FFFFFFFFFFFFFFFFh, 0			; Mask to clear upper half of XMM register 
 STRIDE	dq 64
 
 .code
@@ -24,16 +23,14 @@ sumVector PROC C
 	push        rdi			; RDI is a non-volatile register, so save it.
 	sub         rsp, 20h  
 	mov         rdi, rsp
-	push		rsi		; RSI also needs to be saved.
+	push	    rsi			; RSI also needs to be saved.
 
 ; Initialization
 	vzeroall ; Zero out all ZMM registers
 	mov rax, rcx			; Copy array address to RAX.
 	mov rcx, rdx			; Copy element count to RCX.
 	shr rcx, 4			; RCX <- Number of 2 X 8-double chunks.
-	xor rsi, rsi			; Zero RSI.			
-	
-	vorpd xmm3, xmm3, xmmword ptr [HIMASK]  ; Set bits in lower half of XMM3 for later use.
+	xor rsi, rsi			; Zero RSI.		
 
 PartialSumsLoop:
 	;-----------------------------------------------------------------------------------------------
@@ -73,12 +70,11 @@ CombineSums:
 	;   Indexes 1, 2, and 3 are don't care.
 	vpermpd ymm2, ymm2, 2	
 	
-	; Add YMM1 and YMM2, storing result in YMM0. We're concerned only with 
-	;  the value at index 0.
-	vaddpd ymm0, ymm1, ymm2
+	; Add YMM1 and YMM2, storing result in YMM0. 
+	vaddpd ymm0, ymm1, ymm2	
 	
-	vandpd xmm0, xmm0, xmm3		          ; Clear upper half of XMM0 for the returned double value.
-
+	; At this point, YMM0's lower half, i.e., XMM0, is ready to be returned. Its lower half, a double,
+	;   which is what the caller of this routine is expecting, contains the sum of all elements of the input vector.
 	
 ; Epilogue
 	pop	rsi
